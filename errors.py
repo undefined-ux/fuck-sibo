@@ -62,4 +62,4 @@ class SubmitEssayTestError(Exception):
         self.msg = msg
         self.essay = essay
     def __str__(self) -> str:
-        return f"Failed to Submit Essay {self.essay['title']}: {self.msg}"
+        return f"Failed to Submit Essay \"{self.essay['title']}\": {self.msg}"

@@ -47,9 +47,9 @@ def __post(
     if not req_data['result']:
         raise exception("Unknown Error")
     req_data = json.loads(req_data['result'])
-    if check_result_code and req_data["Code"] != 1:
+    if check_result_code and req_data["Code"] != "1":
         raise exception(f"[{req_data['Code']}] {req_data['Msg']}")
-    return req_data['result']
+    return req_data
 
 
 def login(login_name: str, password: str, school_id: str, app_version: str = "4.5.0") -> str:
