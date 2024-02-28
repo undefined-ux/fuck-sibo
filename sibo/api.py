@@ -41,13 +41,13 @@ def __post(
         "ts": ""
     }
     req = requests.post(url=URL, data=data, headers=HEADERS)
-    if req.status_code is not 200:
+    if req.status_code != 200:
         raise exception(f"Error occoured when contact with server. status code: {req.status_code}")
     req_data = req.json()
     if not req_data['result']:
         raise exception("Unknown Error")
     req_data = json.loads(req_data['result'])
-    if check_result_code and req_data["Code"] is not 1:
+    if check_result_code and req_data["Code"] != 1:
         raise exception(f"[{req_data['Code']}] {req_data['Msg']}")
     return req_data['result']
 
