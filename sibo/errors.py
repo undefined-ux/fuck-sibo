@@ -1,3 +1,4 @@
+from typing import Any
 from requests import Response
 
 class HttpRequestError(Exception): 
@@ -37,3 +38,28 @@ class GetArticlesError(Exception):
         self.msg = msg
     def __str__(self) -> str:
         return f"Failed to get Articles: {self.msg}"
+    
+# class GetArticleContentError(Exception):
+#     def __init__(self, msg: str = "", essay: Any = {"title": "", "id": "", "grade": 0}) -> None:
+#         super().__init__(msg)
+#         self.msg = msg
+#         self.essay = essay
+#     def __str__(self) -> str:
+#         return f"Failed to get Essay \"{self.essay['title']}\" Content: {self.msg}"
+
+class GetEssayAnswerError(Exception):
+    def __init__(self, msg: str = "", essay: Any = {"title": "", "id": "", "grade": 0}) -> None:
+        super().__init__(msg)
+        self.msg = msg
+        self.essay = essay
+    def __str__(self) -> str:
+        return f"Failed to get Essay {self.essay['title']} Answer: {self.msg}"
+    
+
+class SubmitEssayTestError(Exception):
+    def __init__(self, msg: str = "", essay: Any = {"title": "", "id": "", "grade": 0}) -> None:
+        super().__init__(msg)
+        self.msg = msg
+        self.essay = essay
+    def __str__(self) -> str:
+        return f"Failed to Submit Essay {self.essay['title']}: {self.msg}"

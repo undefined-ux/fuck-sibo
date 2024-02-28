@@ -3,15 +3,15 @@ from datetime import datetime
 from typing import Any, Callable
 import requests
 
-
-from sibo.errors import GetArticlesError, GetClassIDError, GetSchoolIDError, HttpRequestError, LoginError
+from sibo.errors import GetArticlesError, GetClassIDError, GetEssayAnswerError, GetSchoolIDError, HttpRequestError, LoginError, SubmitEssayTestError
 
 
 def __post(
         parm: str, 
         jyh: str, 
         exception: Callable[[str], Exception] 
-            = lambda msg: HttpRequestError(msg = msg)
+            = lambda msg: HttpRequestError(msg = msg),
+        check_result_code: bool = True,
         ) -> Any:
     """Post请求
     对request.post的简单封装, 已携带Headers以及其余所需不变参数, 并检查response状态码是否为200, 检查响应体中result是否为空及是否出现异常
@@ -19,12 +19,11 @@ def __post(
     Args:
         parm (str): 请求参数
         jyh (str): 用于区分业务
-        exception (_type_, optional): 错误发生时所需抛出的异常, 默认抛出HttpRequestError
+        exception (_type_, optional): 错误发生时所需抛出的异常, 默认HttpRequestError
+        check_result_code (bool): 是否启用对响应体中result.Code的检测(非1)
 
     Raises:
-        exception: _description_
-        exception: _description_
-        exception: _description_
+        Exception: 调用时确定, 默认为HttpRequestError
 
     Returns:
         Any: _description_
@@ -48,7 +47,7 @@ def __post(
     if not req_data['result']:
         raise exception("Unknown Error")
     req_data = json.loads(req_data['result'])
-    if req_data["Code"] is not 1:
+    if check_result_code and req_data["Code"] is not 1:
         raise exception(f"[{req_data['Code']}] {req_data['Msg']}")
     return req_data['result']
 
@@ -63,7 +62,7 @@ def login(login_name: str, password: str, school_id: str, app_version: str = "4.
         app_version (str, optional): 作用未知 默认为"4.5.0"(抓包值).
 
     Raises:
-        LoginError: 登录失败时抛出
+        LoginError
 
     Returns:
         str: user_id 鉴权token
@@ -88,7 +87,7 @@ def get_school_id(school_name: str) -> str:
         school_name (str): 学校名称
 
     Raises:
-        GetSchoolIDError: 查找失败或未找到学校时抛出
+        GetSchoolIDError
 
     Returns:
         str: 学校schoolID
@@ -111,6 +110,9 @@ def get_classes_id(userID: str) -> list[object]:
 
     Args:
         userID (str): 鉴权token 可通过login获取
+
+    Raises:
+        GetClassIDError
 
     Returns:
         list[object]: 班级名及classID ig [{"name": "example", "id": "example"}, ...]
@@ -136,6 +138,10 @@ def get_articles(user_id: str, class_id: str, grade: int = 0, length: int = 2147
         grade (int, optional): 文章最低难度. 默认为0
         length (int, optional): 获取最大数量. 默认为2147483647.
 
+    Raises:
+        GetArticlesError
+
+ 
     Returns:
         list[object]: 文章的标题、ID及难度, i.g. [{'title': 'example', 'id': 'example', 'grade': 0}, ......]
     """    
@@ -151,8 +157,53 @@ def get_articles(user_id: str, class_id: str, grade: int = 0, length: int = 2147
         "classID": class_id
     }
 
-    result = __post(str(parm), "2002", lambda msg: GetArticlesError(msg))
+
+    result: Any = __post(str(parm), "2002", lambda msg: GetArticlesError(msg))
+    
     return [
         {'title': article['Title'], "id": article['EssayID'], "grade": article['Grade']}
         for article in result['Data']
     ]
+
+
+def get_essay_answer(essay: Any) -> str:
+    """获取可直接提交形式的文章练习答案
+
+    Args:
+        essay_id (str): 文章id, 可由get_articles批量获取
+
+    Raises:
+        GetEssayAnswerError
+
+ 
+    Returns:
+        str: 可直接提交形式的文章练习答案
+    """
+    parm = {
+        "essayID": essay['id']
+    }
+    
+    result = __post(str(parm), "2009", lambda msg: GetEssayAnswerError(msg = msg, essay = essay))
+    return "".join([
+        f"{testcase['TestItemNumber']}-{testcase['Answer']};"
+        for testcase in result['Data']
+    ])[:-1]
+
+
+def submit_essay_test(
+        user_id: str, 
+        essay: Any,
+        class_id: str,
+        answer: str, 
+        create_time: str = datetime.now().replace(microsecond=0).isoformat()
+        ):
+    parm = {
+        "essayID": essay["id"],
+        "userID": user_id,
+        "classID": class_id,
+        "createTime": create_time,
+        "itemResult": answer
+    }
+
+    __post(str(parm), "2010", lambda msg: SubmitEssayTestError(msg = msg,  essay = essay))
+
