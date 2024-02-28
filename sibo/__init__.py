@@ -1,4 +1,4 @@
-from . import api, errors
+import api, errors
 
 if __name__ == "__main__":
     import sys
