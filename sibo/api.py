@@ -4,7 +4,7 @@ from typing import Any, Callable
 import requests
 
 
-from sibo.errors import GetClassIDError, GetSchoolIDError, HttpRequestError, LoginError
+from sibo.errors import GetArticlesError, GetClassIDError, GetSchoolIDError, HttpRequestError, LoginError
 
 
 def __post(
@@ -113,12 +113,46 @@ def get_classes_id(userID: str) -> list[object]:
         userID (str): 鉴权token 可通过login获取
 
     Returns:
-        list[object]: 班级名及classID ig [{"name": "example", "classID": "example"}, ...]
+        list[object]: 班级名及classID ig [{"name": "example", "id": "example"}, ...]
     """    
     parm = {
         "userID": userID,
         "ts": 2
     }
-    result = __post(str(parm), "1001", lambda msg: GetSchoolIDError(msg))
+    result = __post(str(parm), "1001", lambda msg: GetClassIDError(msg))
+
+    return [
+        {"name": Class["ClassName"], "id": Class["ClassID"]}
+        for Class in result['Data']
+    ]
     
-    
+
+def get_articles(user_id: str, class_id: str, grade: int = 0, length: int = 2147483647) -> list[object]:
+    """获取指定数量的文章
+
+    Args:
+        user_id (str): 鉴权token 可通过login获取
+        class_id (str): 可通过get_classes_id获取
+        grade (int, optional): 文章最低难度. 默认为0
+        length (int, optional): 获取最大数量. 默认为2147483647.
+
+    Returns:
+        list[object]: 文章的标题、ID及难度, i.g. [{'title': 'example', 'id': 'example', 'grade': 0}, ......]
+    """    
+    parm = {
+        "keyWord": "",
+        "eassyType": "",
+        "grade": grade,
+        "orderType": 1,
+        "pageStart": 0,
+        "pageSize": length,
+        "ts": 2,
+        "userID": user_id,
+        "classID": class_id
+    }
+
+    result = __post(str(parm), "2002", lambda msg: GetArticlesError(msg))
+    return [
+        {'title': article['Title'], "id": article['EssayID'], "grade": article['Grade']}
+        for article in result['Data']
+    ]

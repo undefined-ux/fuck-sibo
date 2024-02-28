@@ -30,3 +30,10 @@ class GetClassIDError(Exception):
         self.msg = msg
     def __str__(self) -> str:
        return f"Failed to get ClassID: {self.msg}"
+    
+class GetArticlesError(Exception):
+    def __init__(self, msg: str = "") -> None:
+        super().__init__(msg)
+        self.msg = msg
+    def __str__(self) -> str:
+        return f"Failed to get Articles: {self.msg}"
