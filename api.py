@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Any, Callable
 import requests
 
-from sibo.errors import GetArticlesError, GetClassIDError, GetEssayAnswerError, GetSchoolIDError, HttpRequestError, LoginError, SubmitEssayTestError
+from errors import GetArticlesError, GetClassIDError, GetEssayAnswerError, GetSchoolIDError, HttpRequestError, LoginError, SubmitEssayTestError
 
 
 def __post(
