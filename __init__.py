@@ -1,10 +1,18 @@
+from logging import LogRecord
+import loguru
 import api, errors
 
 if __name__ == "__main__":
     import sys
     import json
     from loguru import logger
+    import pytz
+
+    def TimeZonePatcher(record):
+        record["time"].astimezone(pytz.timezone("Asia/Shanghai"))
+
     logger.remove(0) # remove default handler
+    logger.patch(TimeZonePatcher)
     logger.add(sys.stdout, format="[<green>{time:YYYY-MM-DD HH:mm:ss}</green>] [<level>{level}</level>] <level>{message}</level>")
     logger.add('log.log', format="[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}")
     configuration_file = sys.argv[1]
