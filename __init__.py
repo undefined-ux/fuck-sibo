@@ -3,30 +3,33 @@ import api, errors
 if __name__ == "__main__":
     import sys
     import json
+    from loguru import logger
+    logger.remove(0) # remove default handler
+    logger.add(sys.stdout, format="[<green>{time:YYYY-MM-DD HH:mm:ss}</green>] [<level>{level}</level>] <level>{message}</level>")
+    logger.add('log.log', format="[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}")
     configuration_file = sys.argv[1]
     configuration = json.load(open(configuration_file, 'r'))
     try:
-        print(f"INFO: try to login as {configuration['UserName']}")
+        logger.info(f"try to login as {configuration['UserName']}")
         user_id = api.login(configuration["UserName"], configuration["password"], configuration["schoolID"])
-        print(f"INFO: Login Successed.")
+        logger.success("Login Successed.")
         classes = api.get_classes_id(user_id)
         class_id = classes[0]["id"]
-        print(f"INFO: select class {classes[0]['name']} {class_id}")
-        print("INFO: Get All Articales")
+        logger.info(f"select class {classes[0]['name']} {class_id}")
+        logger.info("Get All Articales")
         articles = api.get_articles(user_id=user_id, class_id=class_id)
-        print(f"INFO: The number of Articles is {len(articles)}.")
+        logger.success(f"The number of Articles is {len(articles)}.")
         i, j = (0 ,0)
         while j < 2 and i < len(articles):
             try: 
                 api.submit_essay_test(user_id, articles[i], class_id, api.get_essay_answer(articles[i]))
             except Exception as err:
-                print(f"Error: {err}", file=sys.stderr)
+                logger.error(str(err))
             else:
-                print(f"INFO: Succeed submit essay \"{articles[i]['title']}\"")
+                logger.success(f"Succeed submit essay \"{articles[i]['title']}\"")
                 j += 1
             finally:
                 i += 1
-
     except Exception as err:
-        print(f"Error: {err}", file=sys.stderr)
+        logger.error(str(err), file=sys.stderr)
         exit(1)
