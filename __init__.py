@@ -1,3 +1,4 @@
+import datetime
 from logging import LogRecord
 import loguru
 import api, errors
@@ -9,12 +10,13 @@ if __name__ == "__main__":
     import pytz
 
     def TimeZonePatcher(record):
-        record["time"].astimezone(pytz.timezone("Asia/Shanghai"))
+        # record..astimezone(pytz.timezone("Asia/Shanghai"))
+        record["time"] = datetime.datetime.now().astimezone(pytz.timezone("Asia/Shanghai"))
 
     logger.remove(0) # remove default handler
-    logger.patch(TimeZonePatcher)
     logger.add(sys.stdout, format="[<green>{time:YYYY-MM-DD HH:mm:ss}</green>] [<level>{level}</level>] <level>{message}</level>")
     logger.add('log.log', format="[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}")
+    logger.patch(TimeZonePatcher)
     configuration_file = sys.argv[1]
     configuration = json.load(open(configuration_file, 'r'))
     try:
