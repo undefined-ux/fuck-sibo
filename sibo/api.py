@@ -105,7 +105,7 @@ def get_school_id(school_name: str) -> str:
     raise GetSchoolIDError(f"Could not find {school_name}.")
 
 
-def get_classes_id(userID: str) -> list[object]:
+def get_classes_id(userID: str) -> list[Any]:
     """获取学生所属所有班级的classID
 
     Args:
@@ -115,7 +115,7 @@ def get_classes_id(userID: str) -> list[object]:
         GetClassIDError
 
     Returns:
-        list[object]: 班级名及classID ig [{"name": "example", "id": "example"}, ...]
+        list[Any]: 班级名及classID ig [{"name": "example", "id": "example"}, ...]
     """    
     parm = {
         "userID": userID,
@@ -129,7 +129,7 @@ def get_classes_id(userID: str) -> list[object]:
     ]
     
 
-def get_articles(user_id: str, class_id: str, grade: int = 0, length: int = 2147483647) -> list[object]:
+def get_articles(user_id: str, class_id: str, grade: int = 0, length: int = 2147483647) -> list[Any]:
     """获取指定数量的文章
 
     Args:
@@ -143,7 +143,7 @@ def get_articles(user_id: str, class_id: str, grade: int = 0, length: int = 2147
 
  
     Returns:
-        list[object]: 文章的标题、ID及难度, i.g. [{'title': 'example', 'id': 'example', 'grade': 0}, ......]
+        list[Any]: 文章的标题、ID及难度, i.g. [{'title': 'example', 'id': 'example', 'grade': 0}, ......]
     """    
     parm = {
         "keyWord": "",
