@@ -52,7 +52,7 @@ def __post(
     return req_data
 
 
-def login(login_name: str, password: str, school_id: str, app_version: str = "4.5.0") -> str:
+def login(login_name: str, password: str, school_id: str, app_version: str = "4.5.0") -> dict[str, str]:
     """学生登录
 
     Args:
@@ -77,7 +77,11 @@ def login(login_name: str, password: str, school_id: str, app_version: str = "4.
     }
 
     loginResult = __post(str(parm), "4002_01", lambda msg: LoginError(msg))
-    return loginResult['Data']['ID']
+    return {
+        "user_name": loginResult["Data"]["UserName"],
+        "school_name": loginResult["Data"]["SchoolName"],
+        "user_id": loginResult["Data"]["ID"]
+    }
 
 
 def get_school_id(school_name: str) -> str:

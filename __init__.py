@@ -22,7 +22,9 @@ def __read_configuration_file(configuration_path: str, logger = loguru.logger) -
 def start(user_name: str, password: str, school_id: str, number: int = 2, logger = loguru.logger):
     try:
         logger.info(f"[{user_name}] try to login as {user_name}")
-        user_id = api.login(user_name, password, school_id)
+        user_info= api.login(user_name, password, school_id)
+        user_id = user_info["user_id"]
+        
         logger.success(f"[{user_name}] Login Successed.")
         classes = api.get_classes_id(user_id)
         class_id = classes[0]["id"]
@@ -35,16 +37,16 @@ def start(user_name: str, password: str, school_id: str, number: int = 2, logger
             try: 
                 api.submit_essay_test(user_id, articles[i], class_id, api.get_essay_answer(articles[i]))
             except errors.SubmitEssayTestError as err:
-                logger.warning(str(err))
+                logger.warning(f"[{user_name}] {err}")
             except Exception as err:
-                logger.error(str(err))
+                logger.error(f"[{user_name}] {err}")
             else:
                 logger.success(f"[{user_name}] Succeed submit essay \"{articles[i]['title']}\"")
                 j += 1
             finally:
                 i += 1
     except Exception as err:
-        logger.error(str(err))
+        logger.error(f"[{user_name}] {err}")
         exit(1)
 
 
@@ -67,7 +69,7 @@ if __name__ == "__main__":
     threads: list[threading.Thread] = []
     users: list[dict] = configuration["users"]
     while len(users):
-        if not len(threads) and len(users):
+        if len(threads) <= thread_num and len(users):
             user: dict[str, str] = users.pop()
             new_thread = threading.Thread(
                     target=lambda: start(
