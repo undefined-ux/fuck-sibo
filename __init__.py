@@ -5,10 +5,11 @@ import loguru
 __all__ = [
     "api", "errors", "start"
 ]
+
 def __initalize_logger(log_path: str = 'log.log', logger = loguru.logger):
     logger.remove(0)
     logger.add(sys.stderr, format="[<green>{time:YYYY-MM-DD HH:mm:ss}</green>] [<level>{level}</level>] <level>{message}</level>")
-    logger.add('log.log', format="[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}")
+    logger.add(log_path, format="[{time:YYYY-MM-DD HH:mm:ss}] [{level}] {message}")
     return logger
 
 def __read_configuration_file(configuration_path: str, logger = loguru.logger) -> dict:
