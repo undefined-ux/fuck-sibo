@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Any, Callable
 import requests
 
-from errors import GetArticlesError, GetClassIDError, GetEssayAnswerError, GetSchoolIDError, HttpRequestError, LoginError, SubmitEssayTestError
+from errors import GetArticlesError, GetClassIDError, GetEssayAnswerError, GetSchoolIDError, HttpRequestError, LoginError, ReadEssayError, SubmitEssayTestError
 
 
 def __post(
@@ -211,3 +211,11 @@ def submit_essay_test(
 
     __post(str(parm), "2010", lambda msg: SubmitEssayTestError(msg = msg,  essay = essay))
 
+def read_essay(user_id: str, essay: Any, class_id: str):
+    parm = {
+        "essayID": essay["id"],
+        "userID": user_id,
+        "classID": class_id
+    }
+    
+    __post(str(parm), "2003", lambda msg: ReadEssayError(msg, essay = essay))

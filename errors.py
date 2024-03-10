@@ -39,13 +39,6 @@ class GetArticlesError(Exception):
     def __str__(self) -> str:
         return f"Failed to get Articles: {self.msg}"
     
-# class GetArticleContentError(Exception):
-#     def __init__(self, msg: str = "", essay: Any = {"title": "", "id": "", "grade": 0}) -> None:
-#         super().__init__(msg)
-#         self.msg = msg
-#         self.essay = essay
-#     def __str__(self) -> str:
-#         return f"Failed to get Essay \"{self.essay['title']}\" Content: {self.msg}"
 
 class GetEssayAnswerError(Exception):
     def __init__(self, msg: str = "", essay: Any = {"title": "", "id": "", "grade": 0}) -> None:
@@ -63,3 +56,12 @@ class SubmitEssayTestError(Exception):
         self.essay = essay
     def __str__(self) -> str:
         return f"Failed to Submit Essay \"{self.essay['title']}\": {self.msg}"
+
+    
+class ReadEssayError(Exception):
+    def __init__(self, msg: str = "", essay: Any = {"title": "", "id": "", "grade": 0}) -> None:
+        super().__init__(msg)
+        self.msg = msg
+        self.essay = essay
+    def __str__(self) -> str:
+        return f"Failed to Read Essay \"{self.essay['title']}\": {self.msg}"

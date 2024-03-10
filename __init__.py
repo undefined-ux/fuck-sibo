@@ -35,8 +35,9 @@ def start(user_name: str, password: str, school_id: str, number: int = 2, logger
         i, j = (0 ,0)
         while j < number and i < len(articles):
             try: 
+                api.read_essay(user_id, articles[i], class_id)
                 api.submit_essay_test(user_id, articles[i], class_id, api.get_essay_answer(articles[i]))
-            except errors.SubmitEssayTestError as err:
+            except (errors.SubmitEssayTestError, errors.ReadEssayError) as err:
                 logger.warning(f"[{user_name}] {err}")
             except Exception as err:
                 logger.error(f"[{user_name}] {err}")
