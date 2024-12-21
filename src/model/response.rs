@@ -121,7 +121,7 @@ pub(crate) struct GetArticlesResult {
 }
 
 #[derive(Deserialize, Debug)]
-pub(crate) struct GetArticlesQuestionsResponse {
+pub(crate) struct GetArticlesQuestionsResult {
     #[serde(rename = "TestID")]
     pub test_id: String,
     #[serde(rename = "TestItemNumber")]
@@ -193,13 +193,13 @@ pub(crate) struct ReadArticleResponse {
 pub(crate) type GetArticlesResponse = Vec<GetArticlesResult>;
 pub(crate) type GetStudentClassIDResponse = Vec<GetStudentClassIDResult>;
 pub(crate) type GetSchoolIDResponse = Vec<GetSchoolIDResult>;
-
+pub(crate) type GetArticlesQuestionsResponse = Vec<GetArticlesQuestionsResult>;
 
 impl_from_string!(BaseResponseBody);
 impl_from_string!(LoginResponse);
 impl_from_string!(GetSchoolIDResult);
 impl_from_string!(GetStudentClassIDResult);
 impl_from_string!(GetArticlesResult);
-impl_from_string!(GetArticlesQuestionsResponse);
+impl_from_string!(GetArticlesQuestionsResult);
 impl_from_string!(ReadArticleResponseModel);
 impl_from_string!(ReadArticleResponse);

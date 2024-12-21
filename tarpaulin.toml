@@ -110,7 +110,7 @@ command = "Test"
 exclude = []
 
 # List of file paths to exclude from testing.
-exclude-files = ["src/utils.rs", "src/tests/mod.rs", "src/tests/macros.rs", "src/tests/requests.rs", "src/tests/response.rs", "src/tests/models.rs"]
+exclude-files = ["src/tests/mod.rs", "src/tests/macros.rs", "src/tests/requests.rs", "src/tests/response.rs", "src/tests/models.rs"]
 
 # Additional arguments to pass to the test executables.
 args = []
