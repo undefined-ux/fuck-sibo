@@ -1,0 +1,23 @@
+[package]
+name = "fuck-sibo"
+version = "0.1.0"
+edition = "2021"
+authors = ["undefined <undefined_1@outlook.com>"]
+description  = "大英思博 自动完成阅读"
+repository = "https://github.com/undefined-ux/fuck-sibo"
+license-file = "LICENSE"
+
+
+[dependencies]
+reqwest = { version = "0.12", features = ["json", "gzip"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "2.0.6"
+serde_json = { version = "1.0.133", features = ["preserve_order"] }
+derive_builder = { version = "0.20.2", features = ["clippy"] }
+
+
+
+[profile.release-lto]
+inherits = "release"
+lto = true
