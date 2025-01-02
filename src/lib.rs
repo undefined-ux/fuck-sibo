@@ -2,15 +2,15 @@ mod error;
 mod model;
 pub mod prelude;
 mod utils;
-
+pub mod cli;
 #[cfg(test)]
 mod tests;
 
 use model::*;
 use prelude::*;
 use utils::request;
-use chrono::{Timelike, Local};
-pub async fn login(user_name: &str, password: &str, school_id: &str) -> Result<UserInformation> {
+use chrono::{Local, Timelike};
+pub async fn login(user_name: &str, password: &str, school_id: &str) -> SiboResult<UserInformation> {
     let data = LoginRequestBodyParamBuilder::default()
         .login_name(user_name.to_string())
         .password(password.to_string())
@@ -22,7 +22,7 @@ pub async fn login(user_name: &str, password: &str, school_id: &str) -> Result<U
     Ok(Into::<UserInformation>::into(resp))
 }
 
-pub async fn search_school(keyword: &str) -> Result<Vec<SchoolInformation>> {
+pub async fn search_school(keyword: &str) -> SiboResult<Vec<SchoolInformation>> {
     let data: GetSchoolInformationParam = GetSchoolInformationParamBuilder::default()
         .keyword(keyword.to_string())
         .build()
@@ -32,7 +32,7 @@ pub async fn search_school(keyword: &str) -> Result<Vec<SchoolInformation>> {
     Ok(resp.into_iter().map(SchoolInformation::from).collect())
 }
 
-pub async fn get_classes(user_id: &str) -> Result<Vec<ClassInformation>> {
+pub async fn get_classes(user_id: &str) -> SiboResult<Vec<ClassInformation>> {
     let data = GetClassInformationParamBuilder::default()
         .user_id(user_id.to_string())
         .build()
@@ -42,7 +42,7 @@ pub async fn get_classes(user_id: &str) -> Result<Vec<ClassInformation>> {
     Ok(resp.into_iter().map(ClassInformation::from).collect())
 }
 
-async fn get_article_question(article_id: &str) -> Result<Vec<ArticleQuestion>> {
+async fn get_article_question(article_id: &str) -> SiboResult<Vec<ArticleQuestion>> {
     let param = GetArticlesQuestionsParamBuilder::default()
         .essay_id(article_id.to_string())
         .build()
@@ -54,7 +54,7 @@ async fn get_article_question(article_id: &str) -> Result<Vec<ArticleQuestion>> 
     Ok(resp.into_iter().map(ArticleQuestion::from).collect())
 }
 
-pub async fn get_article_questions(mut article: Article) -> Result<Article> {
+pub async fn get_article_questions(mut article: Article) -> SiboResult<Article> {
     if article.questions.is_some() {
         return Ok(article);
     }
@@ -68,7 +68,7 @@ pub async fn get_articles(
     class_id: &str,
     page_size: Option<i32>,
     crawl_questions: Option<bool>,
-) -> Result<Vec<Article>> {
+) -> SiboResult<Vec<Article>> {
     let crawl_questions = crawl_questions.unwrap_or(false);
     let page_size = match page_size {
         Some(x) => {
@@ -111,7 +111,7 @@ pub async fn submit_article(
     class_id: &str,
     article: Article,
     submit_date_time: Option<&str>,
-) -> Result<()> {
+) -> SiboResult<()> {
     let mut article = article.clone();
     let mut submit_datetime = submit_date_time.map(String::from);
     if article.questions.is_none() {

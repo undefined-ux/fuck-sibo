@@ -14,10 +14,8 @@ pub enum SiboError {
     SubmitFailed {
         message: String, 
     },
-    #[error("Failed to parse Configuration File: {message}")]
-    ConfigurationFileParseFailed {
-        message: String
-    },
+    
+    
     #[error("Request Failed: [{error_code}] {error_message}")]
     RequestFailed {
         jyh: JyhCode,

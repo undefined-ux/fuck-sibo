@@ -1,6 +1,6 @@
 use crate::error::SiboError;
 use crate::model::{BaseRequestBodyBuilder, BaseResponseBody, BaseResponseBodyResult, JyhCode};
-use crate::Result;
+use crate::SiboResult;
 use reqwest::header::{HeaderMap, HeaderValue};
 use serde::de::DeserializeOwned;
 use std::fmt::{Debug, Display};
@@ -18,7 +18,7 @@ fn build_header() -> HeaderMap {
     headers
 }
 
-fn build_request_client() -> Result<reqwest::Client> {
+fn build_request_client() -> SiboResult<reqwest::Client> {
     let header = build_header();
     match reqwest::Client::builder()
         .user_agent(USER_AGENT)
