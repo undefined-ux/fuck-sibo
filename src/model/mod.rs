@@ -1,15 +1,12 @@
-
 #[macro_use]
 pub(crate) mod macros;
 pub(crate) mod requests;
 pub(crate) mod response;
 
-
-use serde::{Serialize, Deserialize};
-
-
-pub(crate) use response::*;
 pub(crate) use requests::*;
+pub(crate) use response::*;
+use serde::{Deserialize, Serialize};
+
 
 #[derive(Debug, Clone, Copy)]
 pub enum JyhCode {
@@ -19,11 +16,10 @@ pub enum JyhCode {
     GetArticles,
     GetArticleQuestions,
     ReadArticle,
-    SubmitArticleTests
+    SubmitArticle,
 }
 
-
-impl From<JyhCode>for String {
+impl From<JyhCode> for String {
     fn from(value: JyhCode) -> Self {
         match value {
             JyhCode::Login => "4002_01",
@@ -32,11 +28,11 @@ impl From<JyhCode>for String {
             JyhCode::GetArticles => "2002",
             JyhCode::GetArticleQuestions => "2009",
             JyhCode::ReadArticle => "2003",
-            JyhCode::SubmitArticleTests => "2010",
-        }.to_string()
+            JyhCode::SubmitArticle => "2010",
+        }
+        .to_string()
     }
 }
-
 
 #[derive(Debug, Clone)]
 pub struct UserInformation {
@@ -44,7 +40,6 @@ pub struct UserInformation {
     pub school_name: String,
     pub id: String,
 }
-
 
 impl From<LoginResponse> for UserInformation {
     fn from(value: LoginResponse) -> Self {
@@ -59,9 +54,8 @@ impl From<LoginResponse> for UserInformation {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SchoolInformation {
     pub name: String,
-    pub id: String
+    pub id: String,
 }
-
 
 impl From<GetSchoolIDResult> for SchoolInformation {
     fn from(value: GetSchoolIDResult) -> Self {
@@ -92,27 +86,6 @@ impl From<GetStudentClassIDResult> for ClassInformation {
 }
 
 #[derive(Debug, Clone)]
-pub struct Article {
-    pub title: String,
-    pub difficulty: i32,
-    pub id: String,
-    pub article_type: String
-}
-
-
-impl From<GetArticlesResult> for Article {
-    fn from(value: GetArticlesResult) -> Self {
-        Article {
-            title: value.title,
-            difficulty: value.grade,
-            id: value.essay_id,
-            article_type: value.essay_type        
-        }
-    }
-}
-
-
-#[derive(Debug, Clone)]
 pub struct ArticleQuestion {
     pub title: String,
     pub choices: Vec<String>,
@@ -120,11 +93,11 @@ pub struct ArticleQuestion {
     pub index: i32,
     pub id: String,
     pub analysis: String,
-    pub question_type: i32
+    pub question_type: i32,
 }
 
-impl From<GetArticlesQuestionsResponse> for ArticleQuestion {
-    fn from(value: GetArticlesQuestionsResponse) -> Self {
+impl From<GetArticlesQuestionsResult> for ArticleQuestion {
+    fn from(value: GetArticlesQuestionsResult) -> Self {
         ArticleQuestion {
             title: value.test_item_title,
             choices: vec![value.chose_a, value.chose_b, value.chose_c, value.chose_d],
@@ -132,7 +105,60 @@ impl From<GetArticlesQuestionsResponse> for ArticleQuestion {
             index: value.test_item_number,
             id: value.test_id,
             analysis: value.analysis,
-            question_type: value.test_item_type
+            question_type: value.test_item_type,
         }
     }
 }
+
+#[derive(Debug, Clone)]
+pub struct Article {
+    pub title: String,
+    pub difficulty: i32,
+    pub id: String,
+    pub article_type: String,
+    pub questions: Option<Vec<ArticleQuestion>>,
+    pub answer: Option<String>,
+}
+
+impl Article {
+    pub(super) fn build_answer_string(questions: &[ArticleQuestion]) -> String {
+        let mut answer = questions.iter().fold(String::new(), |str, q| {
+            format!("{}{}-{};", str, q.id, q.answer)
+        });
+        if !answer.is_empty() {
+            answer.pop();
+        }
+        answer
+    }
+    pub(crate) fn new(
+        metadata: GetArticlesResult,
+        questions: Option<Vec<ArticleQuestion>>,
+    ) -> Self {
+        Self {
+            title: metadata.title,
+            difficulty: metadata.grade,
+            id: metadata.essay_id,
+            article_type: metadata.essay_type,
+            questions: questions.clone(),
+            answer: questions.map(|questions| Article::build_answer_string(&questions)),
+            
+        }
+    }
+    pub(crate) fn fill_questions(&mut self, questions: Vec<ArticleQuestion>) {
+        self.questions = Some(questions);
+        self.answer = Some(Article::build_answer_string(
+            self.questions.as_ref().unwrap(),
+        ));
+    }
+}
+// impl From<GetArticlesResult> for Article {
+//     fn from(value: GetArticlesResult) -> Self {
+//         Article {
+//             title: value.title,
+//             difficulty: value.grade,
+//             id: value.essay_id,
+//             article_type: value.essay_type
+//         }
+//     }
+// }
+//

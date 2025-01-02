@@ -98,18 +98,14 @@ fn test_can_generate_correct_read_articles_param() {
 
 #[test]
 fn test_can_generate_correct_submit_articles_tests_param() {
-    let params = match SubmitArticlesTestsParamBuilder::default()
+    let params = SubmitArticlesParamBuilder::default()
         .essay_id("test".to_string())
         .user_id("test".to_string())
         .class_id("test".to_string())
         .create_time("test".to_string())
-        .item_result("test".to_string())
-        .build()
-    {
-        Ok(params) => params,
-        Err(e) => panic!("Error: {}", e),
-    };
-    let json_str: String = format!("{}", params);
+        .answer("test".to_string())
+        .build().unwrap();
+    let json_str: String = params.to_string();
     assert_eq!(
         json_str,
         r#"{"essayID":"test","userID":"test","classID":"test","createTime":"test","itemResult":"test"}"#
@@ -203,7 +199,7 @@ fn test_jyh_code_to_string() {
     );
     assert_eq!(String::from(JyhCode::ReadArticle), "2003".to_string());
     assert_eq!(
-        String::from(JyhCode::SubmitArticleTests),
+        String::from(JyhCode::SubmitArticle),
         "2010".to_string()
     );
 }
@@ -234,32 +230,33 @@ fn test_get_student_class_id_result_into_class_information() {
 
 
 #[test]
-#[ignore]
 fn test_get_articles_result_into_article_information() {
-    // let article = GetArticlesResult {
-    //     essay_id: "test".to_string(),
-    //     essay_type: "test".to_string(),
-    //     title: "test".to_string(),
-    //     create_time: "".to_string(),
-    //     picture_url: "".to_string(),
-    //     grade: 0,
-    //     rgl_level: "".to_string(),
-    //     sign: 0,
-    //     read_paragraph: "".to_string(),
-    // };
-    // 
-    // let result = Article::from(article);
-    // let except_result = Article {
-    //     title: "test".to_string(),
-    //     difficulty: 0,
-    //     id: "test".to_string(),
-    //     article_type: "test".to_string(),
-    // };
-    // 
-    // assert_eq!(result.title, except_result.title);
-    // assert_eq!(result.difficulty, except_result.difficulty);
-    // assert_eq!(result.id, except_result.id);
-    // assert_eq!(result.article_type, except_result.article_type);
+    let article = GetArticlesResult {
+        essay_id: "test".to_string(),
+        essay_type: "test".to_string(),
+        title: "test".to_string(),
+        create_time: "".to_string(),
+        picture_url: "".to_string(),
+        grade: 0,
+        rgl_level: "".to_string(),
+        sign: 0,
+        read_paragraph: "".to_string(),
+    };
+    
+    let result = Article::new(article, None);
+    let except_result = Article {
+        title: "test".to_string(),
+        difficulty: 0,
+        id: "test".to_string(),
+        article_type: "test".to_string(),
+        questions: None,
+        answer: None,
+    };
+    
+    assert_eq!(result.title, except_result.title);
+    assert_eq!(result.difficulty, except_result.difficulty);
+    assert_eq!(result.id, except_result.id);
+    assert_eq!(result.article_type, except_result.article_type);
 }
 
 

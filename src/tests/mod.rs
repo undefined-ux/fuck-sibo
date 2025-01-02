@@ -13,8 +13,6 @@ pub(super) struct Configuration {
     school_id: String,
     user_id: String, // 理论上user_id值唯一
     class_id: String,
-    article_id: String,
-    article_answer: String
 }
 
 pub(super) fn setup() -> Configuration {
@@ -22,8 +20,6 @@ pub(super) fn setup() -> Configuration {
     let password = env::var("PASSWORD").unwrap();
     let school_name = env::var("SCHOOL_NAME").unwrap();
     let school_id = env::var("SCHOOL_ID").unwrap();
-    let article_id = env::var("ARTICLE_ID").unwrap();
-    let article_answer = env::var("ARTICLE_ANSWER").unwrap();
     let user_id = env::var("USER_ID").unwrap();
     let class_id = env::var("CLASS_ID").unwrap();
     Configuration {
@@ -31,8 +27,6 @@ pub(super) fn setup() -> Configuration {
         password,
         school_name,
         school_id,
-        article_id,
-        article_answer,
         user_id,
         class_id
     }

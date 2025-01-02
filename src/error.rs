@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::model::JyhCode;
+use crate::model::{JyhCode, UserInformation};
 
 
 #[derive(Error, Debug)]
@@ -10,11 +10,15 @@ pub enum SiboError {
         user_name: String,
         message: String,
     },
+    #[error("Submit Article Failed: {message}")]
+    SubmitFailed {
+        message: String, 
+    },
     #[error("Failed to parse Configuration File: {message}")]
     ConfigurationFileParseFailed {
         message: String
     },
-    #[error("Request Failed: {error_code} {error_message}")]
+    #[error("Request Failed: [{error_code}] {error_message}")]
     RequestFailed {
         jyh: JyhCode,
         error_code: String,

@@ -22,3 +22,5 @@ jobs:
           toolchain: ${{ matrix.version }}
       - name: coverage
         run: cargo run --release -- tarpaulin --engine llvm --follow-exec --post-test-delay 10 --coveralls ${{ secrets.COVERALLS_TOKEN }}
+
+        #932e8305-eaa3-425c-a79a-a5177cfcc5c4

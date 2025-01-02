@@ -97,7 +97,7 @@ pub(crate) struct ReadArticlesParam {
 
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub(crate) struct SubmitArticlesTestsParam {
+pub(crate) struct SubmitArticlesParam {
     #[serde(rename = "essayID")]
     pub essay_id: String,
     #[serde(rename = "userID")]
@@ -107,7 +107,7 @@ pub(crate) struct SubmitArticlesTestsParam {
     #[serde(rename = "createTime")]
     pub create_time: String,
     #[serde(rename = "itemResult")]
-    pub item_result: String
+    pub answer: String
 }
 
 
@@ -120,4 +120,4 @@ impl_display!(GetClassInformationParam);
 impl_display!(GetArticlesParam);
 impl_display!(GetArticlesQuestionsParam);
 impl_display!(ReadArticlesParam);
-impl_display!(SubmitArticlesTestsParam);
+impl_display!(SubmitArticlesParam);
