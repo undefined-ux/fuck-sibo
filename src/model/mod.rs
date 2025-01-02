@@ -123,7 +123,7 @@ pub struct Article {
 impl Article {
     pub(super) fn build_answer_string(questions: &[ArticleQuestion]) -> String {
         let mut answer = questions.iter().fold(String::new(), |str, q| {
-            format!("{}{}-{};", str, q.id, q.answer)
+            format!("{}{}-{};", str, q.index, q.answer)
         });
         if !answer.is_empty() {
             answer.pop();
