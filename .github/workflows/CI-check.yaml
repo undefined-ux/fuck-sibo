@@ -10,7 +10,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
-          components: rustfmt
+          components: rustfmt clippy
       - run: cargo fmt --check
       - run: cargo clippy --no-deps --workspace --all-targets
   test:
