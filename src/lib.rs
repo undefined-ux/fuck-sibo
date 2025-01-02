@@ -1,16 +1,20 @@
+pub mod cli;
 mod error;
 mod model;
 pub mod prelude;
-mod utils;
-pub mod cli;
 #[cfg(test)]
 mod tests;
+mod utils;
 
+use chrono::{Local, Timelike};
 use model::*;
 use prelude::*;
 use utils::request;
-use chrono::{Local, Timelike};
-pub async fn login(user_name: &str, password: &str, school_id: &str) -> SiboResult<UserInformation> {
+pub async fn login(
+    user_name: &str,
+    password: &str,
+    school_id: &str,
+) -> SiboResult<UserInformation> {
     let data = LoginRequestBodyParamBuilder::default()
         .login_name(user_name.to_string())
         .password(password.to_string())
@@ -90,11 +94,12 @@ pub async fn get_articles(
         .unwrap();
     let resp: GetArticlesResponse = request(JyhCode::GetArticles, Box::new(data)).await?;
 
-
     if !crawl_questions {
-        return Ok(resp.into_iter().map(|res| Article::new(res, None)).collect());
+        return Ok(resp
+            .into_iter()
+            .map(|res| Article::new(res, None))
+            .collect());
     }
-
 
     let mut result: Vec<Article> = Vec::new();
     for article in resp {
@@ -109,7 +114,7 @@ pub async fn get_articles(
 pub async fn submit_article(
     user_id: &str,
     class_id: &str,
-    article: Article,
+    article: &Article,
     submit_date_time: Option<&str>,
 ) -> SiboResult<()> {
     let mut article = article.clone();
@@ -128,19 +133,22 @@ pub async fn submit_article(
         .class_id(class_id.to_string())
         .create_time(submit_datetime.unwrap())
         .answer(article.answer.unwrap())
-        .build().unwrap();
+        .build()
+        .unwrap();
 
     match request::<String>(JyhCode::SubmitArticle, Box::new(data)).await {
         Ok(_) => Ok(()),
-        Err(err) => if err.to_string() == "Empty Data Field." {
-            Ok(())
-        } else {
-            Err(SiboError::SubmitFailed {
-                message: match err {
-                    SiboError::RequestFailed { error_message, .. } => error_message,
-                    _ =>  unreachable!("{:?}", err),
-                },
-            })
+        Err(err) => match err {
+            SiboError::RequestFailed { error_message, .. } => {
+                if error_message == "Empty Data field" {
+                    Ok(())
+                } else {
+                    Err(SiboError::SubmitFailed {
+                        message: error_message,
+                    })
+                }
+            }
+            _ => unreachable!("{:?}", err),
         },
     }
 }
