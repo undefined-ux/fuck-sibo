@@ -1,9 +1,9 @@
 on: push
-name: Lint
+name: Lint & Test
 
 jobs:
-  rustfmt:
-    name: Run rustfmt
+  clippy-and-rustfmt:
+    name: Run rustfmt and clippy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,8 +13,8 @@ jobs:
           components: rustfmt
       - run: cargo fmt --check
       - run: cargo clippy --no-deps --workspace --all-targets
-  clippy-and-test:
-    name: Other build/test
+  test:
+    name: unit test
     strategy:
       fail-fast: false
       matrix:
@@ -28,11 +28,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust_version }}
-          components: clippy
-
-
-      # Don't run clippy on Windows, we only need to run it on Linux
-      - if: runner.os != 'windows'
-        run: cargo clippy --no-deps --workspace --all-targets
-
       - run: cargo test --workspace
+        env:
+          LOGIN_NAME: ${{ secrets.LOGIN_NAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          SCHOOL_ID: ${{ secrets.SCHOOL_ID }}
+          SCHOOL_NAME: ${{ secrets.SCHOOL_NAME }}
+          USER_ID: ${{ secrets.USER_ID }}
+          CLASS_ID: ${{ secrets.CLASS_ID }}

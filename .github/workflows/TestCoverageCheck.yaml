@@ -26,6 +26,12 @@ jobs:
           CARGO_INCREMENTAL: '0'
           RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
           RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+          LOGIN_NAME: ${{ secrets.LOGIN_NAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          SCHOOL_ID: ${{ secrets.SCHOOL_ID }}
+          SCHOOL_NAME: ${{ secrets.SCHOOL_NAME }}
+          USER_ID: ${{ secrets.USER_ID }}
+          CLASS_ID: ${{ secrets.CLASS_ID }}
       - name: rust-grcov
         # You may pin to the exact commit or the version.
         # uses: actions-rs/grcov@bb47b1ed7883a1502fa6875d562727ace2511248
