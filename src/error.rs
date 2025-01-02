@@ -10,7 +10,7 @@ pub enum SiboError {
         user_name: String,
         message: String,
     },
-    #[error("Submit Article Failed: {message}")]
+    #[error("{message}")]
     SubmitFailed {
         message: String, 
     },

@@ -33,7 +33,7 @@ fn build_request_client() -> SiboResult<reqwest::Client> {
 
 pub(crate) async fn request<Ty: DeserializeOwned + Debug>(
     jyh_code: JyhCode,
-    data: Box<dyn Display>,
+    data: Box<dyn Display + Send>,
 ) -> std::result::Result<Ty, SiboError> {
     let client = build_request_client()?;
     let body = BaseRequestBodyBuilder::default()

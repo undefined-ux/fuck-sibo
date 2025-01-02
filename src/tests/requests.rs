@@ -121,7 +121,7 @@ async fn test_can_submit_article() {
         Some(article) => article.clone(),
         None => panic!("No article found."),
     };
-    match submit_article(&user_id, &class_id, article, Some(&submit_datetime)).await {
+    match submit_article(&user_id, &class_id, &article, Some(&submit_datetime)).await {
         Ok(_) => {}
         Err(e) => match e {
             SiboError::SubmitFailed { message, .. } => {
@@ -150,7 +150,7 @@ async fn test_can_submit_article_without_submit_datetime() {
         Some(article) => article.clone(),
         None => panic!("No article found."),
     };
-    match submit_article(&user_id, &class_id, article, None).await {
+    match submit_article(&user_id, &class_id, &article, None).await {
         Ok(_) => {}
         Err(e) => match e {
             SiboError::SubmitFailed { message, .. } => {
@@ -181,7 +181,7 @@ async fn test_can_submit_article_without_precrawl_questions() {
         Some(article) => article.clone(),
         None => panic!("No article found."),
     };
-    match submit_article(&user_id, &class_id, article, Some(&submit_datetime)).await {
+    match submit_article(&user_id, &class_id, &article, Some(&submit_datetime)).await {
         Ok(_) => {}
         Err(e) => match e {
             SiboError::SubmitFailed { message, .. } => {
