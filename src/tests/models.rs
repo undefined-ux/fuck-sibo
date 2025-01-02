@@ -104,7 +104,8 @@ fn test_can_generate_correct_submit_articles_tests_param() {
         .class_id("test".to_string())
         .create_time("test".to_string())
         .answer("test".to_string())
-        .build().unwrap();
+        .build()
+        .unwrap();
     let json_str: String = params.to_string();
     assert_eq!(
         json_str,
@@ -198,10 +199,7 @@ fn test_jyh_code_to_string() {
         "2009".to_string()
     );
     assert_eq!(String::from(JyhCode::ReadArticle), "2003".to_string());
-    assert_eq!(
-        String::from(JyhCode::SubmitArticle),
-        "2010".to_string()
-    );
+    assert_eq!(String::from(JyhCode::SubmitArticle), "2010".to_string());
 }
 
 #[test]
@@ -221,13 +219,12 @@ fn test_get_student_class_id_result_into_class_information() {
         name: "test".to_string(),
         teacher_name: "test".to_string(),
     };
-    
+
     assert_eq!(result.id, except_result.id);
     assert_eq!(result.teacher_name, except_result.teacher_name);
     assert_eq!(result.name, except_result.name);
     assert_eq!(result.term_name, except_result.term_name);
 }
-
 
 #[test]
 fn test_get_articles_result_into_article_information() {
@@ -242,7 +239,7 @@ fn test_get_articles_result_into_article_information() {
         sign: 0,
         read_paragraph: "".to_string(),
     };
-    
+
     let result = Article::new(article, None);
     let except_result = Article {
         title: "test".to_string(),
@@ -252,13 +249,12 @@ fn test_get_articles_result_into_article_information() {
         questions: None,
         answer: None,
     };
-    
+
     assert_eq!(result.title, except_result.title);
     assert_eq!(result.difficulty, except_result.difficulty);
     assert_eq!(result.id, except_result.id);
     assert_eq!(result.article_type, except_result.article_type);
 }
-
 
 #[test]
 fn test_get_article_questions_result_into_article_question() {
@@ -286,7 +282,7 @@ fn test_get_article_questions_result_into_article_question() {
         analysis: "test".to_string(),
         question_type: 0,
     };
-    
+
     assert_eq!(result.answer, except_result.answer);
     assert_eq!(result.question_type, except_result.question_type);
     assert_eq!(result.title, except_result.title);

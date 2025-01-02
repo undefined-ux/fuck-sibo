@@ -7,7 +7,6 @@ pub(crate) use requests::*;
 pub(crate) use response::*;
 use serde::{Deserialize, Serialize};
 
-
 #[derive(Debug, Clone, Copy)]
 pub enum JyhCode {
     Login,
@@ -141,7 +140,6 @@ impl Article {
             article_type: metadata.essay_type,
             questions: questions.clone(),
             answer: questions.map(|questions| Article::build_answer_string(&questions)),
-            
         }
     }
     pub(crate) fn fill_questions(&mut self, questions: Vec<ArticleQuestion>) {

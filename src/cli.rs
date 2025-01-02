@@ -9,14 +9,12 @@ use CommandType::Cli;
 #[derive(Debug, Default)]
 pub enum CommandType {
     #[default]
-    Cli, 
-    SearchSchool, Tui
+    Cli,
+    SearchSchool,
+    Tui,
 }
 
-
-fn read_configuration_file<P: AsRef<Path>>(
-    path: P,
-) -> Result<Root, Box<dyn std::error::Error>> {
+fn read_configuration_file<P: AsRef<Path>>(path: P) -> Result<Root, Box<dyn std::error::Error>> {
     let contents = fs::read_to_string(path).expect("Failed to read file");
     match toml::from_str(&contents) {
         Ok(config) => Ok(config),
@@ -144,7 +142,10 @@ fn parse_ci_subcommand(m: &ArgMatches) -> Result<Args, Box<dyn Error>> {
                     .map(|it| User {
                         username: it.username,
                         password: it.password,
-                        school_id: Some(it.school_id.unwrap_or(config.config.default_school_id.clone())),
+                        school_id: Some(
+                            it.school_id
+                                .unwrap_or(config.config.default_school_id.clone()),
+                        ),
                         number_of_article: Some(
                             it.number_of_article
                                 .unwrap_or(config.config.default_number_of_article),
@@ -156,25 +157,22 @@ fn parse_ci_subcommand(m: &ArgMatches) -> Result<Args, Box<dyn Error>> {
         }),
         Err(err) => Err(Box::new(CommandArgumentsParseError {
             message: format!("Could not read configuration file: {}", err),
-        }))
+        })),
     }
 }
 
 fn parse_fuck_subcommand(m: &ArgMatches) -> Result<Args, Box<dyn Error>> {
     if !m.contains_id("username") {
         return Err(Box::new(CommandArgumentsParseError {
-            message: "Error when parse commandline arguments: missing field username"
-                .to_string(),
+            message: "Error when parse commandline arguments: missing field username".to_string(),
         }));
     } else if !m.contains_id("password") {
         return Err(Box::new(CommandArgumentsParseError {
-            message: "Error when parse commandline arguments: missing field password"
-                .to_string(),
+            message: "Error when parse commandline arguments: missing field password".to_string(),
         }));
     } else if !m.contains_id("schoolId") {
         return Err(Box::new(CommandArgumentsParseError {
-            message: "Error when parse commandline arguments: missing field schoolId"
-                .to_string(),
+            message: "Error when parse commandline arguments: missing field schoolId".to_string(),
         }));
     }
     Ok(Args {
@@ -184,9 +182,7 @@ fn parse_fuck_subcommand(m: &ArgMatches) -> Result<Args, Box<dyn Error>> {
             username: m.get_one::<String>("username").unwrap().clone(),
             password: m.get_one::<String>("password").unwrap().clone(),
             school_id: Some(m.get_one::<String>("schoolId").unwrap().clone()),
-            number_of_article: Some(
-                *m.get_one::<usize>("articleNumber").unwrap() as u32
-            ),
+            number_of_article: Some(*m.get_one::<usize>("articleNumber").unwrap() as u32),
         }]),
         ..Default::default()
     })
@@ -198,7 +194,7 @@ pub fn parse_commandline_arguments() -> Result<Args, Box<dyn Error>> {
         Some(("ci", m)) => parse_ci_subcommand(m),
         Some(("fuck", m)) => parse_fuck_subcommand(m),
         _ => {
-           panic!("invalid command");
+            panic!("invalid command");
         }
     }
 }

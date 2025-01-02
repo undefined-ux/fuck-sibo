@@ -1,7 +1,6 @@
 #![allow(unused)]
 use serde::{Deserialize, Serialize};
 
-
 #[derive(Debug, Deserialize)]
 pub(crate) struct BaseResponseBodyResult<T>
 where

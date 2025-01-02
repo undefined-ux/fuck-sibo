@@ -9,7 +9,7 @@ macro_rules! impl_display {
 }
 
 /// 实现从json字符串解析到结构体, 结构体必须有Deserialize trait
-macro_rules! impl_from_string{
+macro_rules! impl_from_string {
     ($struct_name:ident) => {
         impl From<String> for $struct_name {
             fn from(s: String) -> Self {

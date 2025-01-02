@@ -1,6 +1,8 @@
 use crate::error::SiboError;
 use crate::tests::{setup, Configuration};
-use crate::{get_article_questions, get_articles, get_classes, login, search_school, submit_article};
+use crate::{
+    get_article_questions, get_articles, get_classes, login, search_school, submit_article,
+};
 use chrono::{Local, Timelike};
 
 #[tokio::test]
@@ -198,7 +200,6 @@ async fn test_can_submit_article_without_precrawl_questions() {
     }
 }
 
-
 #[tokio::test]
 async fn test_get_article_questions_with_already_crawled() {
     let configuration: Configuration = setup();
@@ -213,5 +214,8 @@ async fn test_get_article_questions_with_already_crawled() {
     };
     article.questions = Some(vec![]);
     let new_article = get_article_questions(article).await.unwrap();
-    assert!(new_article.questions.unwrap().is_empty(), "should not be recrawl.");
+    assert!(
+        new_article.questions.unwrap().is_empty(),
+        "should not be recrawl."
+    );
 }

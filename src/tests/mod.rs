@@ -28,8 +28,6 @@ pub(super) fn setup() -> Configuration {
         school_name,
         school_id,
         user_id,
-        class_id
+        class_id,
     }
 }
-
-

@@ -4,7 +4,10 @@ const DEFAULT_TS_VALUE: i32 = 2;
 const DEFAULT_APP_VERSION: &str = "4.5.0";
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub(crate) struct BaseRequestBody where Self: Sized {
+pub(crate) struct BaseRequestBody
+where
+    Self: Sized,
+{
     pub jyh: String,
     pub parm: String,
     #[builder(setter(skip = true), default = "String::new()")]
@@ -27,7 +30,6 @@ pub(crate) struct LoginRequestBodyParam {
     pub app_version: String,
 }
 
-
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub(crate) struct GetSchoolInformationParam {
     #[serde(rename = "keyWord")]
@@ -39,7 +41,6 @@ pub(crate) struct GetSchoolInformationParam {
     #[builder(setter(skip = true), default = "i32::MAX")]
     page_size: i32,
 }
-
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub(crate) struct GetClassInformationParam {
@@ -76,14 +77,11 @@ pub(crate) struct GetArticlesParam {
     keyword: String,
 }
 
-
-
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub(crate) struct GetArticlesQuestionsParam {
     #[serde(rename = "essayID")]
     pub essay_id: String,
 }
-
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub(crate) struct ReadArticlesParam {
@@ -94,7 +92,6 @@ pub(crate) struct ReadArticlesParam {
     #[serde(rename = "classID")]
     pub class_id: String,
 }
-
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub(crate) struct SubmitArticlesParam {
@@ -107,12 +104,8 @@ pub(crate) struct SubmitArticlesParam {
     #[serde(rename = "createTime")]
     pub create_time: String,
     #[serde(rename = "itemResult")]
-    pub answer: String
+    pub answer: String,
 }
-
-
-
-
 
 impl_display!(LoginRequestBodyParam);
 impl_display!(GetSchoolInformationParam);
