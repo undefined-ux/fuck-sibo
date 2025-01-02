@@ -4,16 +4,13 @@ use std::error::Error;
 use std::fs;
 use std::path::Path;
 use thiserror::Error;
+use CommandType::Cli;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub enum CommandType {
-    Cli, SearchSchool, Tui
-}
-
-impl Default for CommandType {
-    fn default() -> Self {
-        CommandType::Cli
-    }
+    #[default]
+    Cli, 
+    SearchSchool, Tui
 }
 
 
@@ -34,7 +31,7 @@ pub struct Config {
     default_number_of_article: u32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct User {
     pub username: String,
     pub password: String,
@@ -138,7 +135,7 @@ fn parse_ci_subcommand(m: &ArgMatches) -> Result<Args, Box<dyn Error>> {
     let configuration_file_path = m.get_one::<String>("config").unwrap().clone();
     match read_configuration_file(configuration_file_path) {
         Ok(config) => Ok(Args {
-            command: CommandType::Cli,
+            command: Cli,
             school_name: None,
             users: Some(
                 config
@@ -181,7 +178,7 @@ fn parse_fuck_subcommand(m: &ArgMatches) -> Result<Args, Box<dyn Error>> {
         }));
     }
     Ok(Args {
-        command: CommandType::Cli,
+        command: Cli,
         thread_num: Some(*m.get_one::<usize>("thread").unwrap()),
         users: Some(vec![User {
             username: m.get_one::<String>("username").unwrap().clone(),
