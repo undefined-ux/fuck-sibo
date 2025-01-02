@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::model::{JyhCode, UserInformation};
+use crate::model::JyhCode;
 
 
 #[derive(Error, Debug)]
